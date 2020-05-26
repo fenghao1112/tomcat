@@ -775,6 +775,7 @@ public abstract class AbstractEndpoint<S> {
         startInternal();
     }
 
+    // 循环创建Acceptor线程
     protected final void startAcceptorThreads() {
         int count = getAcceptorThreadCount();
         acceptors = new Acceptor[count];

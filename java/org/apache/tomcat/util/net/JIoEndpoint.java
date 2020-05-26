@@ -451,11 +451,14 @@ public class JIoEndpoint extends AbstractEndpoint<Socket> {
                 createExecutor();
             }
 
+            // 初始化连接限制条件
             initializeConnectionLatch();
 
+            // // 循环创建Acceptor线程，用来接收socket连接
             startAcceptorThreads();
 
             // Start async timeout thread
+            // 启动一个线程监听socket是否超时
             Thread timeoutThread = new Thread(new AsyncTimeout(),
                     getName() + "-AsyncTimeout");
             timeoutThread.setPriority(threadPriority);
