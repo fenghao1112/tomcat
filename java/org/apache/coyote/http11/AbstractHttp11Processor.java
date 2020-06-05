@@ -1077,7 +1077,7 @@ public abstract class AbstractHttp11Processor<S> extends AbstractProcessor<S> {
             try {
                 // 第一次从socket中读取数据，并设置socket的读取数据的超时时间
                 // 对于BIO，一个socket连接建立好后，不一定马上就被Tomcat处理了，其中需要线程池的调度，所以这段等待的时间要算在socket读取数据的时间内
-                // 而对于NIO而言，没有阻塞
+                // 而对于NIO而言，没有阻塞，此方法会从socket读取数据
                 setRequestLineReadTimeout();
 
                 // 解析请求行

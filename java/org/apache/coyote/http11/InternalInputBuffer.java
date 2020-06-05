@@ -124,8 +124,8 @@ public class InternalInputBuffer extends AbstractInputBuffer<Socket> {
         // Method name is a token
         //
 
+        // 判断空字符' ' 或 '\t'
         boolean space = false;
-
         while (!space) {
 
             // Read new bytes if needed
@@ -168,7 +168,7 @@ public class InternalInputBuffer extends AbstractInputBuffer<Socket> {
 
         //
         // Reading the URI
-        //
+        // 读取URI
 
         boolean eol = false;
 
@@ -531,6 +531,7 @@ public class InternalInputBuffer extends AbstractInputBuffer<Socket> {
         if (parsingHeader) {
 
             // 如果还在解析请求头，lastValid表示当前解析数据的下标位置，如果该位置等于buf的长度了，表示请求头的数据超过buf了。
+            // buf.length 默认值为8 * 1024 bit
             if (lastValid == buf.length) {
                 throw new IllegalArgumentException
                     (sm.getString("iib.requestheadertoolarge.error"));
@@ -538,6 +539,8 @@ public class InternalInputBuffer extends AbstractInputBuffer<Socket> {
 
             // 从inputStream中读取数据，len表示要读取的数据长度，pos表示把从inputStream读到的数据放在buf的pos位置
             // nRead表示真实读取到的数据
+            // lastValid表示buf从操作系统中读取到的数据的下标位置
+            // pos表示当前读取到buf中数据的下标位置
             nRead = inputStream.read(buf, pos, buf.length - lastValid);
             if (nRead > 0) {
                 lastValid = pos + nRead; // 移动lastValid
@@ -545,7 +548,8 @@ public class InternalInputBuffer extends AbstractInputBuffer<Socket> {
 
         } else {
             // 当读取请求体的数据时
-            // buf.length - end表示还能存放多少请求体数据，如果小于4500，那么就新生成一个byte数组，这个新的数组专门用来盛放请求体
+            // buf.length - end表示还能存放多少请求体数据，如果小于4500，那么就新生成一个byte数组，这个新的数组专门用来盛放请求体。此时buf中的数据就全部是请求体的数据了
+            // end 表示请求头结束，请求体开始的下标位置
             if (buf.length - end < 4500) {
                 // In this case, the request header was really large, so we allocate a
                 // brand new one; the old one will get GCed when subsequent requests
